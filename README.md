@@ -1,7 +1,7 @@
 # notetui
 
 ターミナル（TUI）で動く Misskey クライアント。コアロジックは
-[`notecli`](https://github.com/hitalin/notecli) ライブラリに委譲し、本リポジトリは
+[`notecli`](https://github.com/notedeck-dev/notecli) ライブラリに委譲し、本リポジトリは
 TUI フロントエンドのみを持つ。NoteDeck（GUI）と同列の「notecli を消費する別フロント
 エンド」という位置づけで、アカウント DB を共有する。
 

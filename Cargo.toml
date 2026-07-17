@@ -3,14 +3,14 @@ name = "notetui"
 version = "0.1.0"
 edition = "2021"
 description = "Terminal (TUI) Misskey client built on the notecli library"
-repository = "https://github.com/hitalin/notetui"
+repository = "https://github.com/notedeck-dev/notetui"
 license = "MIT"
 
 [dependencies]
 # Core Misskey client/library. Same crate NoteDeck consumes — TUI is just
 # another frontend over it. Pinned to a git rev (like notedeck) for
 # reproducible builds; bump the rev to pick up notecli changes.
-notecli = { git = "https://github.com/hitalin/notecli", rev = "6f7d7a79d273392320a5f524df7e768347510eaa" }
+notecli = { git = "https://github.com/notedeck-dev/notecli", rev = "6f7d7a79d273392320a5f524df7e768347510eaa" }
 ratatui = "0.29"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
 anyhow = "1"
