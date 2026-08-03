@@ -10,7 +10,7 @@ license = "MIT"
 # Core Misskey client/library. Same crate NoteDeck consumes — TUI is just
 # another frontend over it. Pinned to a git rev (like notedeck) for
 # reproducible builds; bump the rev to pick up notecli changes.
-notecli = { git = "https://github.com/notedeck-dev/notecli", rev = "6f7d7a79d273392320a5f524df7e768347510eaa" }
+notecli = { git = "https://github.com/notedeck-dev/notecli", rev = "1f68a91a52894c9950bdb107faae61b346f6e260" }
 ratatui = "0.29"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
 anyhow = "1"

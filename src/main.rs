@@ -12,7 +12,7 @@ use std::time::Duration;
 use anyhow::{bail, Context, Result};
 use notecli::api::MisskeyClient;
 use notecli::db::Database;
-use notecli::models::{Account, NormalizedNote, TimelineOptions, TimelineType};
+use notecli::models::{Account, NormalizedNote, TimelineKey, TimelineOptions};
 use ratatui::crossterm::event::{self, Event, KeyCode, KeyEventKind};
 use ratatui::layout::{Constraint, Layout};
 use ratatui::style::{Color, Modifier, Style, Stylize};
@@ -87,7 +87,9 @@ async fn main() -> Result<()> {
     let account = match db.load_accounts()?.into_iter().next() {
         Some(account) => account,
         None => {
-            println!("アカウントがありません。ログインするホストを入力してください (例: misskey.io):");
+            println!(
+                "アカウントがありません。ログインするホストを入力してください (例: misskey.io):"
+            );
             print!("> ");
             io::stdout().flush().ok();
             let mut host = String::new();
@@ -192,8 +194,9 @@ impl App {
         }
     }
 
-    fn timeline(&self) -> TimelineType {
-        TimelineType::new(TIMELINES[self.tl_idx].0)
+    fn timeline(&self) -> TimelineKey {
+        // TIMELINES は既知のベーシック TL 名のみなので parse は常に成功する
+        TimelineKey::parse(TIMELINES[self.tl_idx].0).expect("basic timeline key")
     }
 
     /// Fetch the current timeline and reset the selection to the top.
@@ -206,7 +209,7 @@ impl App {
                 &self.host,
                 &self.token,
                 &self.account.id,
-                self.timeline(),
+                &self.timeline(),
                 opts,
             )
             .await
@@ -383,7 +386,10 @@ fn note_lines(note: &NormalizedNote, width: usize) -> Vec<Line<'static>> {
             Style::default().fg(Color::Cyan).bold(),
         ),
         Span::raw("  "),
-        Span::styled(short_time(&note.created_at), Style::default().fg(Color::DarkGray)),
+        Span::styled(
+            short_time(&note.created_at),
+            Style::default().fg(Color::DarkGray),
+        ),
     ]));
 
     if let Some(cw) = note.cw.as_deref().filter(|s| !s.is_empty()) {
@@ -415,7 +421,11 @@ fn note_lines(note: &NormalizedNote, width: usize) -> Vec<Line<'static>> {
 /// "Display Name @user@host" for a note's author.
 fn display_handle(note: &NormalizedNote) -> String {
     let u = &note.user;
-    let name = u.name.as_deref().filter(|s| !s.is_empty()).unwrap_or(&u.username);
+    let name = u
+        .name
+        .as_deref()
+        .filter(|s| !s.is_empty())
+        .unwrap_or(&u.username);
     match u.host.as_deref() {
         Some(h) if !h.is_empty() => format!("{name} @{}@{}", u.username, h),
         _ => format!("{name} @{}", u.username),
